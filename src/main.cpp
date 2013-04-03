@@ -48,6 +48,7 @@ struct Options {
 	size_t row_b;
 	MatrixMultiplicationImplementation implementation;
 	unsigned int seed;
+  bool checking_result;
 };
 
 int ParseOptions(int argc, char** argv, Options *options) {
@@ -58,17 +59,27 @@ int ParseOptions(int argc, char** argv, Options *options) {
 		size = atoi(argv[1]);
 	}
 	if (argc > 2) {
-		switch (argv[2][0]) {
-		case 'r':
-			implementation = kCpuReference;
-			break;
+	  switch (atoi(argv[2])) {
+		case 0:
+		  implementation = kCpuReference;
+		  break;
+		case 1:
+		  implementation = kMic;
+		  break;
 		default:
-			std::cerr << "Error : invalid implementation option " << argv[2]
-					<< std::endl;
-			return 1;
-			break;
+		  std::cerr << "Error : invalid implementation option " << argv[2]
+			    << std::endl;
+		  return 1;
+		  break;
 		}
 	}
+	if (argc > 3 && atoi(argv[3])) {
+	  options->checking_result = true;
+	} else {
+	  options->checking_result = false;
+	}
+
+	
 	options->column_a = size;
 	options->row_a = size;
 	options->column_b = size;
@@ -140,8 +151,6 @@ int main(int argc, char** argv) {
 	std::vector<float> matrix_b(options.row_b * options.column_b);
 	std::vector<float> matrix_c(options.row_b * options.column_a);
 
-	bool check_result = true;
-
 	SetRandomInit(matrix_a.size(), &matrix_a[0]);
 	SetRandomInit(matrix_b.size(), &matrix_b[0]);
 
@@ -156,7 +165,7 @@ int main(int argc, char** argv) {
 
 	std::cout << "Matrix c size=(\t" << options.column_a << ",\t"
 				<< options.row_b << ")" << std::endl;
-
+       
 	std::cout << "Selected implimentation is " << GetName(options.implementation) << std::endl;
 	double start_time = GetTimeSec();
 	if (MultiplyMatrices(options.implementation, options.column_a,
@@ -174,7 +183,7 @@ int main(int argc, char** argv) {
 	std::cout.width(10);
 	std::cout << end_time - start_time << " sec" << std::endl;
 
-	if (check_result) {
+	if (options.checking_result) {
 		std::cout << "Checking Result" << std::endl;
 		std::vector<float> reference_matrix_c(options.row_b * options.column_a);
 		if (MultiplyMatrices(kCpuReference, options.column_a, options.row_a,

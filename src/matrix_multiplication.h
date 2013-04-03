@@ -41,11 +41,18 @@
 
 enum MatrixMultiplicationImplementation{
 	kCpuReference,
+	kMic,
 };
 
 std::string GetName(const MatrixMultiplicationImplementation &implementation);
 
 int MultiplyMatricesCpuReference(size_t column_a, size_t row_a, float* matrix_a,
+		size_t column_b, size_t row_b, float* matrix_b, float* matrix_c);
+
+int MultiplyMatricesCpuMkl(size_t column_a, size_t row_a, float* matrix_a,
+		size_t column_b, size_t row_b, float* matrix_b, float* matrix_c);
+
+int MultiplyMatricesCpuMic(size_t column_a, size_t row_a, float* matrix_a,
 		size_t column_b, size_t row_b, float* matrix_b, float* matrix_c);
 
 
