@@ -15,3 +15,7 @@ CPU mode
 Xeon Phi mode
 -----------
     ./matrix_multiplication 1024 1
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/shu65/matrix_multiplication/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
